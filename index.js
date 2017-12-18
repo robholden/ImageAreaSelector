@@ -149,7 +149,6 @@ module.exports = {
       var newY = that._props.y;
   
       /* Determine pos/neg positioning */
-      var pSize = 0;
       if (that._props.resizing === 'nw' || (that._props.resizing === 'sw' && that.opts.keepAspect)) {
         width = that._props.width + (that._props.width - width);
         height = that._props.height + (that._props.height - height);
@@ -186,7 +185,6 @@ module.exports = {
           newY = 0;
         } else if ((that._props.y + height) > img.height) {
           height = that._props.height;
-          newY = (that._props.y + height) - img.height;
         }
       }
 
