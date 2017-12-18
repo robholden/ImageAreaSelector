@@ -12,11 +12,12 @@ div {
 }
 
 img {
+  display: block;
   width: 100%;
   max-width: 500px;
 }
 
-.cropper-container {
+#cropper-container {
   display: inline-block;
   overflow: hidden;
 }
@@ -24,7 +25,7 @@ img {
 #cropper-move {
   position: absolute;
   box-shadow: 0 0 0 20000px rgba(0, 0, 0, 0.5);
-  border: 2px dotted blue;
+  /* border: 3px dotted black; */
   cursor: move;
 }
 
@@ -40,38 +41,38 @@ img {
 
 #cropper-resize div {
   position: absolute;
-  width: 5px;
-  height: 5px;
+  width: 15px;
+  height: 15px;
 }
 
 #cropper-resize .nw {
-  top: -2px;
-  left: -2px;
-  border-top: 2px solid black;
-  border-left: 2px solid black;
+  top: 0;
+  left: 0;
+  border-top: 5px solid black;
+  border-left: 5px solid black;
   cursor: nw-resize;
 }
 
 #cropper-resize .ne {
-  top: -2px;
-  right: -2px;
-  border-top: 2px solid black;
-  border-right: 2px solid black;
+  top: 0;
+  right: 0;
+  border-top: 5px solid black;
+  border-right: 5px solid black;
   cursor: ne-resize;
 }
 
 #cropper-resize .sw {
-  bottom: -2px;
-  left: -2px;
-  border-bottom: 2px solid black;
-  border-left: 2px solid black;
+  bottom: 0;
+  left: 0;
+  border-bottom: 5px solid black;
+  border-left: 5px solid black;
   cursor: sw-resize;
 }
 
 #cropper-resize .se {
-  bottom: -2px;
-  right: -2px;
-  border-bottom: 2px solid black;
-  border-right: 2px solid black;
+  bottom: 0;
+  right: 0;
+  border-bottom: 5px solid black;
+  border-right: 5px solid black;
   cursor: se-resize;
 }
