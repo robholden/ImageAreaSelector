@@ -164,7 +164,7 @@ module.exports = {
             break;
           case 'sw':
             width += (that._props.width - width) * 2;
-            newX += that._props.width - width;
+            newX += xVal;
             break;
           case 'ne':
             height += (that._props.height - height) * 2;
@@ -176,9 +176,9 @@ module.exports = {
 
         // Don't go out of the boundries
         if (newX < 0) {
-          width = that._props.width;
+          width = that._props.width + (newX - xVal);
           newX = 0;
-        } else if ((that._props.x + width) > img.width) {
+        } else if ((that._props.x + width + xVal) > img.width) {
           width = that._props.width;
         }
         
@@ -187,10 +187,9 @@ module.exports = {
           newY = 0;
         } else if ((that._props.y + height) > img.height) {
           height = that._props.height;
-          newY = (that._props.y + height) - img.height;
         }
       }
-
+      
       // Min/max width/height
       if (width > that.opts.maxWidth) {
         width = that.opts.maxWidth;
@@ -331,7 +330,7 @@ var cropper = require('./index');
 cropper.setup({
   imgId: 'img',
   className: 'container',
-  keepAspect: false
+  keepAspect: true
 });
 
 document.getElementById('img').onclick = function (event) {

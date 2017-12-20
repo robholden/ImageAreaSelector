@@ -3,7 +3,7 @@ var cropper = require('./index');
 cropper.setup({
   imgId: 'img',
   className: 'container',
-  keepAspect: false
+  keepAspect: true
 });
 
 document.getElementById('img').onclick = function (event) {
