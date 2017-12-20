@@ -7,12 +7,17 @@ A Javascript plugin for image cropping.
 ## Usage
 There are four methods: setup, show, hide, crop.
 
-Method  Usage      
-------  ------------
-setup   Sets up the plugin.
-show    Shows the selector
-hide    Hides the selector
-crop    Returns an object contain selected dimensions (native width|height|x&y of bottom left corner)
+#### Setup
+Sets up the plugin.
+
+#### Show
+Shows the selector
+
+#### Hide
+Hides the selector
+
+#### Crop
+Returns an object contain selected dimensions (native width|height|x&y of bottom left corner)
 
 ~~~
 cropper.setup({
