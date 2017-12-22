@@ -2,7 +2,7 @@
 A Javascript plugin for image cropping.
 
 ## Installation
-``[Coming Soon] npm install image-area-selector --save``
+``npm install image-area-selector --save``
 
 ## Usage
 There are four methods: setup, show, hide, crop.
@@ -20,6 +20,8 @@ Hides the selector
 Returns an object contain selected dimensions (native width|height|x&y of bottom left corner)
 
 ~~~
+var cropper = require('./index');
+
 cropper.setup({
   imgId: 'img',
   className: 'container',
