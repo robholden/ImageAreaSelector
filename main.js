@@ -2,7 +2,7 @@ var cropper = require('./index');
 
 cropper.setup({
   imgId: 'img',
-  className: 'container',
+  className: 'outer',
   keepAspect: true
 });
 

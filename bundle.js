@@ -55,6 +55,7 @@ module.exports = {
 
     // Bind options
     if (opts.keepAspect != null) this.opts.keepAspect = opts.keepAspect;
+    if (opts.className != null) this.opts.className = opts.className;
     if (opts.minWidth != null) this.opts.minWidth = opts.minWidth;
     if (opts.maxWidth != null) this.opts.maxWidth = opts.maxWidth; else this.opts.maxWidth = img.width;
     if (opts.minHeight != null) this.opts.minHeight = opts.minHeight;
@@ -328,7 +329,7 @@ var cropper = require('./index');
 
 cropper.setup({
   imgId: 'img',
-  className: 'container',
+  className: 'outer',
   keepAspect: true
 });
 
