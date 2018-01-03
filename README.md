@@ -45,7 +45,7 @@ document.getElementById('done').onclick = function (event) {
 <button id="done">Done</button>
 ~~~
 
-#### Stylesheet
+## Stylesheet
 Styling is up to you, but you can use the below for minimal styles.
 ~~~
 * {
