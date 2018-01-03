@@ -7,45 +7,43 @@ A Javascript module for image cropping.
 ## Usage
 There are four methods: setup, show, hide, crop.
 
-#### Setup
-Sets up the plugin.
-
-#### Show
-Shows the selector
-
-#### Hide
-Hides the selector
-
-#### Crop
-Returns an object contain selected dimensions (native width|height|x&y of bottom left corner)
-
-~~~
-var cropper = require('./index');
-
-cropper.setup({
-  imgId: 'img',
-  className: 'container',
-  keepAspect: true
-});
-
-document.getElementById('img').onclick = function (event) {
-  cropper.show();
-}
-
-document.getElementById('done').onclick = function (event) {
-  cropper.crop(function(result) {
-    console.log(result);
-    cropper.hide();
-  });
-}
-
+### HTML
+~~~~
 <div>
   <img id="img" src="large.jpg"></div>
 </div>
 <button id="done">Done</button>
-~~~
+~~~~
 
-## Stylesheet
+### Javascript
+~~~
+var cropper = require('./index');
+
+// You can run this either before/after an image has loaded
+cropper.setup({
+  imgId: 'img',           // The id of the image to be used for cropping
+  className: 'container', // The image will be surrounded by a div, you can give that div a class name
+  keepAspect: true        // Allow any ratio, or keep the image ratio during resizing
+});
+
+document.getElementById('img').onclick = function (event) {
+  cropper.show(); // Triggers the selector over the image
+}
+
+document.getElementById('done').onclick = function (event) {
+  /*
+    This generates the new picture dimensions in images native size
+    It returns the width & height of the new thumbnail as well as the x & y positions (bottom left corner)
+    It's up to you to create a thumbnail using these dimensions
+  */
+  cropper.crop(function(result) {
+    console.log(result);
+    cropper.hide(); // This hides the selector
+  });
+}
+~~~~
+
+### Stylesheet
 Styling is up to you, but you can use the below for minimal styles.
 ~~~
 * {
