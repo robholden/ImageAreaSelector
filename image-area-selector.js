@@ -29,9 +29,6 @@
       }
       return target
     },
-    get: function (done) {
-      
-    },
     _props: {
       ratio: 1,
       x: 0,
