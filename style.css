@@ -5,6 +5,8 @@
 body {
   padding: 25px;
   user-select: none;
+  background: #CCC;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 div {

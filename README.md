@@ -4,6 +4,9 @@ A Javascript module for image cropping.
 ## Installation
 ``npm install image-area-selector --save``
 
+## Screenshots
+<img src="https://media.giphy.com/media/20NWtoZW4edhWESmyw/giphy.gif" width="425"> <img src="https://media.giphy.com/media/8FJe2UCtlvv2TMorMx/giphy.gif" width="425">
+
 ## Usage
 There are four methods: setup, show, hide, crop.
 
