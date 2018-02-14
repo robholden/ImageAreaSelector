@@ -1,6 +1,6 @@
 {
   "name": "image-area-selector",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Plugin for image cropping.",
   "main": "image-area-selector.js",  
   "repository": {
