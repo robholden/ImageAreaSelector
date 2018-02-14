@@ -87,7 +87,7 @@
       var that = this;
   
       that._props.ratio = img.naturalWidth / img.width;
-      that._props.width = (img.width / 2) < this.options.maxWidth ? (img.width / 2) : that.options.maxWidth;
+      that._props.width = (img.width / 2) < (this.options.maxWidth / that._props.ratio) ? (img.width / 2) : (that.options.maxWidth / that._props.ratio);
       that._props.height = that._props.width / that._props.ratio;
       that._props.x = (img.width / 2) - (that._props.width / 2);
       that._props.y = (img.height / 2) - (that._props.height / 2);
@@ -201,16 +201,16 @@
         }
         
         // Min/max width/height
-        if (width > that.options.maxWidth) {
-          width = that.options.maxWidth;
-        } else if (width < that.options.minWidth) {
-          width = that.options.minWidth;
+        if ((width * that._props.ratio) > that.options.maxWidth) {
+          width = that.options.maxWidth / that._props.ratio;
+        } else if ((width * that._props.ratio) < that.options.minWidth) {
+          width = that.options.minWidth / that._props.ratio;
           newX = that._props.x;
         }
-        if (height > that.options.maxHeight) {
-          height = that.options.maxHeight;
-        } else if (height < that.options.minHeight) {
-          height = that.options.minHeight;
+        if ((height * that._props.ratio) > that.options.maxHeight) {
+          height = that.options.maxHeight / that._props.ratio;
+        } else if ((height * that._props.ratio) < that.options.minHeight) {
+          height = that.options.minHeight / that._props.ratio;
           newY = that._props.y;
         }
   
