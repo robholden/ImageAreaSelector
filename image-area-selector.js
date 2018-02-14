@@ -91,7 +91,7 @@
       that._props.height = img.height / 2;
       that._props.x = (img.width / 2) - (that._props.width / 2);
       that._props.y = (img.height / 2) - (that._props.height / 2);
-  
+      
       var selector = document.getElementById('selector-move');
       if (selector) selector.remove();
   
@@ -99,8 +99,8 @@
       selector.id = 'selector-move';    
       selector.style.width = that._props.width + 'px';
       selector.style.height = that._props.height + 'px';
-      selector.style.top = that._props.y + 'px';
-      selector.style.left = that._props.x + 'px';
+      selector.style.top = that._props.y + img.offsetTop + 'px';
+      selector.style.left = that._props.x + img.offsetLeft + 'px';
       selector.style.display = 'none';
   
       var resizor = document.createElement('div');
@@ -143,8 +143,8 @@
         that._props.x = absX;
         that._props.y = absY;
   
-        selector.style.top = absY + 'px';
-        selector.style.left = absX + 'px';
+        selector.style.top = absY + img.offsetTop + 'px';
+        selector.style.left = absX + img.offsetLeft + 'px';
   
       }
   
@@ -243,8 +243,8 @@
         /* Update positions */
         selector.style.width = width + 'px';
         selector.style.height = height + 'px';
-        selector.style.top = newY + 'px';
-        selector.style.left = newX + 'px';
+        selector.style.top = newY + img.offsetTop + 'px';
+        selector.style.left = newX + img.offsetLeft + 'px';
         
         that._props.width = width;
         that._props.height = height;
