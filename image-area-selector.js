@@ -69,7 +69,7 @@
   
       // Check img exists
       var img = document.getElementById(this.options.imgId);
-      if (!img) return console.error('Element not found: ' + this.this.options.img);
+      if (!img) return console.error('Element not found: ' + this.options.img);
   
       var that = this;
       try {

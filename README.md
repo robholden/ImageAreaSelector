@@ -23,7 +23,7 @@ There are four methods: setup, show, hide, capture.
 var selector = new Selector({
   imgId: 'img',           // The id of the image to be used for selecting
   className: 'container', // The image will be surrounded by a div, you can give that div a class name
-  keepAspect: true        // Allow any ratio, or keep the image ratio during resizing
+  keepAspect: true,       // Allow any ratio, or keep the image ratio during resizing
   minWidth: 50,           // Minimum allowed width (native)
   maxWidth: 300,          // Maximum allowed width (native)
   minHeight: 50,          // Minimum allowed height (native)
