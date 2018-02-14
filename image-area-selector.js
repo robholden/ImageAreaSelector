@@ -88,7 +88,7 @@
   
       that._props.ratio = img.naturalWidth / img.width;
       that._props.width = (img.width / 2) < (this.options.maxWidth / that._props.ratio) ? (img.width / 2) : (that.options.maxWidth / that._props.ratio);
-      that._props.height = that._props.width / that._props.ratio;
+      that._props.height = that._props.width / (img.width / img.height);
       that._props.x = (img.width / 2) - (that._props.width / 2);
       that._props.y = (img.height / 2) - (that._props.height / 2);
       

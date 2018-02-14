@@ -21,7 +21,11 @@
     var selector = new Selector({
       imgId: 'img',
       className: 'outer',
-      keepAspect: true
+      keepAspect: true,
+      minWidth: 500,
+      maxWidth: 1000,
+      minHeight: 500,
+      maxHeight: 1000
     }).setup();
 
     document.getElementById('img').onclick = function (event) {
