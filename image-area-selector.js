@@ -76,7 +76,7 @@
         that.logic(img);
       } catch (ex) {
         img.onload = function(event) {
-          that.logic(img);
+          that.logic(this);
         }
       }
   
