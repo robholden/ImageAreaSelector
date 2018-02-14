@@ -17,14 +17,14 @@ There are four methods: setup, show, hide, crop.
 
 ### Javascript
 ~~~
-var cropper = require('./index');
-
-// You can run this either before/after an image has loaded
-cropper.setup({
+var cropper = new Cropper({
   imgId: 'img',           // The id of the image to be used for cropping
   className: 'container', // The image will be surrounded by a div, you can give that div a class name
   keepAspect: true        // Allow any ratio, or keep the image ratio during resizing
-});
+})
+
+// You can run this either before/after an image has loaded
+cropper.setup();
 
 document.getElementById('img').onclick = function (event) {
   cropper.show(); // Triggers the selector over the image

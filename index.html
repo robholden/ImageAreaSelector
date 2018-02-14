@@ -6,13 +6,31 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
   <link rel="stylesheet" type="text/css" href="style.css">
-  <title>Prompt Boxes</title>
+  <title>Image Area Selector</title>
 </head>
 <body>
   <div>
     <img id="img" src="large.jpg"></div>
   </div>
   <button id="done">Done</button>
-  <script src="bundle.js"></script>
+  <script src="image-area-selector.js"></script>
+  <script>
+    var cropper = new Cropper({
+      imgId: 'img',
+      className: 'outer',
+      keepAspect: true
+    }).setup();
+
+    document.getElementById('img').onclick = function (event) {
+      cropper.show();
+    }
+
+    document.getElementById('done').onclick = function (event) {
+      cropper.crop(function(result) {
+        console.log(result);
+        cropper.hide();
+      });
+    }
+  </script>
 </body>
 </html>

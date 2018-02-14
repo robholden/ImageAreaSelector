@@ -1,11 +1,8 @@
 {
   "name": "image-area-selector",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Plugin for image cropping.",
-  "main": "index.js",
-  "scripts": {
-    "watch": "nodemon --ignore bundle.js --exec browserify main.js -o bundle.js"
-  },
+  "main": "image-area-selector.js",  
   "repository": {
     "type": "git",
     "url": "https://github.com/robholden/ImageAreaSelector.git"
