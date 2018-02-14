@@ -18,18 +18,18 @@
 
   <script src="image-area-selector.js"></script>
   <script>
-    var cropper = new Cropper({
+    var selector = new Selector({
       imgId: 'img',
       className: 'outer',
       keepAspect: true
     }).setup();
 
     document.getElementById('img').onclick = function (event) {
-      cropper.show();
+      selector.show();
     }
 
     document.getElementById('done').onclick = function (event) {
-      cropper.crop(function(result) {
+      selector.capture(function(result) {
         var data = "<table>" +
                    "  <tr><td>Width &nbsp;&nbsp;</td> <td>" + result.width.toFixed(2) + "px</td></tr>" +
                    "  <tr><td>Height</td> <td>" + result.height.toFixed(2) + "px</td></tr>" +
@@ -38,7 +38,7 @@
                    "</table>";
         document.getElementById('coords').innerHTML = data;
         console.log(result);
-        cropper.hide();
+        selector.hide();
       });
     }
   </script>

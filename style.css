@@ -19,19 +19,19 @@ img {
   max-width: 500px;
 }
 
-#cropper-container {
+#selector-container {
   display: inline-block;
   overflow: hidden;
 }
 
-#cropper-move {
+#selector-move {
   position: absolute;
   box-shadow: 0 0 0 20000px rgba(0, 0, 0, 0.5);
   /* border: 3px dotted black; */
   cursor: move;
 }
 
-#cropper-resize {
+#selector-resize {
   display: block;
   position: absolute;
   top: 0;
@@ -41,13 +41,13 @@ img {
   opacity: 1;
 }
 
-#cropper-resize div {
+#selector-resize div {
   position: absolute;
   width: 15px;
   height: 15px;
 }
 
-#cropper-resize .nw {
+#selector-resize .nw {
   top: 0;
   left: 0;
   border-top: 5px solid black;
@@ -55,7 +55,7 @@ img {
   cursor: nw-resize;
 }
 
-#cropper-resize .ne {
+#selector-resize .ne {
   top: 0;
   right: 0;
   border-top: 5px solid black;
@@ -63,7 +63,7 @@ img {
   cursor: ne-resize;
 }
 
-#cropper-resize .sw {
+#selector-resize .sw {
   bottom: 0;
   left: 0;
   border-bottom: 5px solid black;
@@ -71,7 +71,7 @@ img {
   cursor: sw-resize;
 }
 
-#cropper-resize .se {
+#selector-resize .se {
   bottom: 0;
   right: 0;
   border-bottom: 5px solid black;

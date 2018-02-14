@@ -1,11 +1,11 @@
 (function (name, context, definition) {
   'use strict'
   if (typeof window.define === 'function' && window.define.amd) { window.define(definition) } else if (typeof module !== 'undefined' && module.exports) { module.exports = definition() } else if (context.exports) { context.exports = definition() } else { context[name] = definition() }
-})('Cropper', this, function () {
+})('Selector', this, function () {
   'use strict'
-  var Cropper = function (options) {
-    if (!(this instanceof Cropper)) {
-      return new Cropper(options)
+  var Selector = function (options) {
+    if (!(this instanceof Selector)) {
+      return new Selector(options)
     }
 
     var defaultOptions = {
@@ -19,7 +19,7 @@
     }
     this.options = this.extend(options, defaultOptions)
   }
-  Cropper.prototype = {
+  Selector.prototype = {
     extend: function (source, target) {
       if (source == null) { return target }
       for (var k in source) {
@@ -43,7 +43,7 @@
       resizing: ''
     },
   
-    crop: function(callback) {
+    capture: function(callback) {
       callback({
         width: this._props.width * this._props.ratio,
         height: this._props.height * this._props.ratio,
@@ -52,17 +52,17 @@
     },
   
     show: function () {
-      var cropper = document.getElementById('cropper-move');
-      if (! cropper) return console.error('Element not loaded');
-      cropper.style.display = 'block';
+      var selector = document.getElementById('selector-move');
+      if (! selector) return console.error('Element not loaded');
+      selector.style.display = 'block';
       return this;
     },
   
     hide: function () {
-      var cropper = document.getElementById('cropper-move');
-      if (! cropper) return;
+      var selector = document.getElementById('selector-move');
+      if (! selector) return;
   
-      cropper.style.display = 'none';
+      selector.style.display = 'none';
     },
   
     setup: function() {    
@@ -92,16 +92,16 @@
       that._props.x = (img.width / 2) - (that._props.width / 2);
       that._props.y = (img.height / 2) - (that._props.height / 2);
   
-      var cropper = document.getElementById('cropper-move');
-      if (cropper) cropper.remove();
+      var selector = document.getElementById('selector-move');
+      if (selector) selector.remove();
   
-      cropper = document.createElement('div');
-      cropper.id = 'cropper-move';    
-      cropper.style.width = that._props.width + 'px';
-      cropper.style.height = that._props.height + 'px';
-      cropper.style.top = that._props.y + 'px';
-      cropper.style.left = that._props.x + 'px';
-      cropper.style.display = 'none';
+      selector = document.createElement('div');
+      selector.id = 'selector-move';    
+      selector.style.width = that._props.width + 'px';
+      selector.style.height = that._props.height + 'px';
+      selector.style.top = that._props.y + 'px';
+      selector.style.left = that._props.x + 'px';
+      selector.style.display = 'none';
   
       var resizor = document.createElement('div');
       var nw = document.createElement('div');
@@ -109,7 +109,7 @@
       var se = document.createElement('div');
       var sw = document.createElement('div');
   
-      resizor.id = "cropper-resize"
+      resizor.id = "selector-resize"
       nw.className = "nw";
       ne.className = "ne";
       se.className = "se";
@@ -139,12 +139,12 @@
           absY = 0;
         }
         
-        // Update croppers location
+        // Update selectors location
         that._props.x = absX;
         that._props.y = absY;
   
-        cropper.style.top = absY + 'px';
-        cropper.style.left = absX + 'px';
+        selector.style.top = absY + 'px';
+        selector.style.left = absX + 'px';
   
       }
   
@@ -241,10 +241,10 @@
         }
     
         /* Update positions */
-        cropper.style.width = width + 'px';
-        cropper.style.height = height + 'px';
-        cropper.style.top = newY + 'px';
-        cropper.style.left = newX + 'px';
+        selector.style.width = width + 'px';
+        selector.style.height = height + 'px';
+        selector.style.top = newY + 'px';
+        selector.style.left = newX + 'px';
         
         that._props.width = width;
         that._props.height = height;
@@ -256,7 +256,7 @@
   
       }
       
-      cropper.onmousedown = function (event) {
+      selector.onmousedown = function (event) {
         that._props.mousedown = true;
         that._props.offsetX = event.offsetX;
         that._props.offsetY = event.offsetY;
@@ -307,23 +307,23 @@
       resizor.appendChild(ne);
       resizor.appendChild(sw);
       resizor.appendChild(se);
-      cropper.appendChild(resizor);
+      selector.appendChild(resizor);
       
       // Contain img with container
       // `element` is the element you want to wrap
-      var container = document.getElementById('cropper-container');
+      var container = document.getElementById('selector-container');
       if (! container) {
         var parent = img.parentNode;
         container = document.createElement('div');
         container.className = this.options.className;
-        container.id = 'cropper-container';
+        container.id = 'selector-container';
         parent.replaceChild(container, img);
         container.appendChild(img);
       }
-      img.parentElement.appendChild(cropper);
+      img.parentElement.appendChild(selector);
     }
   }
-  return Cropper
+  return Selector
 })
 
 Element.prototype.remove = function() {
