@@ -5,6 +5,8 @@ A Javascript plugin that selects an area of an image.
 ``npm install image-area-selector --save``
 
 ## Screenshots
+You can view a live demo [here](http://www.iamrobert.co.uk/projects).
+
 <img src="https://media.giphy.com/media/20NWtoZW4edhWESmyw/giphy.gif" width="400"> <img src="https://media.giphy.com/media/8FJe2UCtlvv2TMorMx/giphy.gif" width="400">
 
 ## Usage
@@ -24,10 +26,11 @@ var selector = new Selector({
   imgId: 'img',           // The id of the image to be used for selecting
   className: 'container', // The image will be surrounded by a div, you can give that div a class name
   keepAspect: true,       // Allow any ratio, or keep the image ratio during resizing
-  minWidth: 50,           // Minimum allowed width (native)
-  maxWidth: 300,          // Maximum allowed width (native)
-  minHeight: 50,          // Minimum allowed height (native)
-  maxHeight: 300          // Maximum allowed height (native)
+  minWidth: 50,           // Minimum allowed width
+  maxWidth: 300,          // Maximum allowed width
+  minHeight: 50,          // Minimum allowed height
+  maxHeight: 300,         // Maximum allowed height
+  relative: true          // Uses dimensions as native or relative
 })
 
 // You can run this either before/after an image has loaded
