@@ -85,13 +85,22 @@
   
     logic: function (img) {
       var that = this;
+
+      if (img.naturalWidth === 0) {
+        setTimeout(() => that.logic(img), 100);
+        return;
+      }
+
+      window.onresize = function() {
+        that.logic(img);
+      }
   
       that._props.ratio = img.naturalWidth / img.width;
       that._props.width = (img.width / 2) < (this.options.maxWidth / that._props.ratio) ? (img.width / 2) : (that.options.maxWidth / that._props.ratio);
       that._props.height = that._props.width / (img.width / img.height);
       that._props.x = (img.width / 2) - (that._props.width / 2);
       that._props.y = (img.height / 2) - (that._props.height / 2);
-      
+
       var selector = document.getElementById('selector-move');
       if (selector) selector.remove();
   
@@ -294,16 +303,16 @@
       selector.ontouchstart = function (event) { if (event.touches.length > 0) selDown(event.touches[0]); }
   
       nw.onmousedown = function (event) { that._props.resizing = 'nw'; }
-      nw.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'nw'; }
-
       ne.onmousedown = function (event) { that._props.resizing = 'ne'; }
-      ne.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'ne'; }
-
       sw.onmousedown = function (event) { that._props.resizing = 'sw'; }
-      sw.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'sw'; }
-
       se.onmousedown = function (event) { that._props.resizing = 'se'; }
-      se.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'se'; }
+
+      if (! that.options.keepAspect) {
+        nw.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'nw'; }
+        ne.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'ne'; }
+        sw.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'sw'; }
+        se.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'se'; }
+      }
   
       resizor.appendChild(nw);
       resizor.appendChild(ne);
