@@ -86,7 +86,7 @@
     logic: function (img) {
       var that = this;
 
-      if (img.naturalWidth === 0) {
+      if (img.width === 0 || img.height === 0 || img.naturalWidth === 0 || img.naturalHeight === 0) {
         setTimeout(() => that.logic(img), 100);
         return;
       }
