@@ -125,7 +125,7 @@
         /* Stops the selector being auto-centred */
         absX -= that._props.offsetX;
         absY -= that._props.offsetY;
-        
+
         /* Only move selector within bounds of the image */
         if (absX > (img.width - that._props.width)) {
           absX = img.width - that._props.width;
@@ -255,53 +255,55 @@
         that._props.originY = event.clientY;
   
       }
-      
-      selector.onmousedown = function (event) {
-        that._props.mousedown = true;
-        that._props.offsetX = event.offsetX;
-        that._props.offsetY = event.offsetY;
-      }
-  
-      document.onmousedown = function (event) {
+
+      var docDown = function (event) {
         that._props.originX = event.clientX;
         that._props.originY = event.clientY;
       }
-  
-      document.onmouseup = function (event) {
+
+      var docUp = function () {
         that._props.mousedown = false;
         that._props.offsetX = 0;
         that._props.offsetY = 0;
         that._props.resizing = '';
       }
-  
-      document.onmousemove = function(event) {
-  
-        // Only move on mousedown
+
+      var docMove = function (event) {
         if (! that._props.mousedown) return;
   
-        if (that._props.resizing) {
-          onResize(event);
-        } else {
-          onMove(event);
-        }
-  
-      }      
-  
-      nw.onmousedown = function (event) {
-        that._props.resizing = 'nw';
+        if (that._props.resizing) onResize(event);
+        else onMove(event);
       }
-  
-      ne.onmousedown = function (event) {
-        that._props.resizing = 'ne';
+
+      var selDown = function (event) {
+        that._props.mousedown = true;
+        that._props.offsetX = event.offsetX || that._props.width / 2;
+        that._props.offsetY = event.offsetY || that._props.height / 2;
       }
+      
+      document.onmousedown = function (event) { docDown(event); }
+      document.ontouchstart = function(event) { if (event.touches.length > 0) docDown(event.touches[0]);}      
+      
+      document.onmouseup = function (event) { docUp(event); }
+      document.ontouchend = function(event) { docUp(); } 
+
+      document.onmousemove = function(event) { docMove(event); }      
+      document.ontouchmove = function(event) { if (event.touches.length > 0) docMove(event.touches[0]);}      
+
+      selector.onmousedown = function (event) { selDown(event); }
+      selector.ontouchstart = function (event) { if (event.touches.length > 0) selDown(event.touches[0]); }
   
-      sw.onmousedown = function (event) {
-        that._props.resizing = 'sw';
-      }
-  
-      se.onmousedown = function (event) {
-        that._props.resizing = 'se';
-      }    
+      nw.onmousedown = function (event) { that._props.resizing = 'nw'; }
+      nw.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'nw'; }
+
+      ne.onmousedown = function (event) { that._props.resizing = 'ne'; }
+      ne.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'ne'; }
+
+      sw.onmousedown = function (event) { that._props.resizing = 'sw'; }
+      sw.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'sw'; }
+
+      se.onmousedown = function (event) { that._props.resizing = 'se'; }
+      se.ontouchstart = function(event) { if (event.touches.length > 0) that._props.resizing = 'se'; }
   
       resizor.appendChild(nw);
       resizor.appendChild(ne);
