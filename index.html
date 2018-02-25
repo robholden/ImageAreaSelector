@@ -10,7 +10,7 @@
 </head>
 <body>
   <div>
-    <img id="img" src="large.jpg"></div>
+    <img id="img" src="portrait.jpg"></div>
   </div>
   <button id="done">Done</button> 
   <br /><br />
@@ -22,11 +22,12 @@
       imgId: 'img',
       className: 'outer',
       keepAspect: true,
-      minWidth: 50,
-      maxWidth: 200,
-      minHeight: 50,
-      maxHeight: 200,
-      relative: false
+      customRatio: true,
+      minWidth: 100,
+      maxWidth: 400,
+      minHeight: 75,
+      maxHeight: 300,
+      relative: true
     }).setup();
 
     document.getElementById('img').onclick = function (event) {

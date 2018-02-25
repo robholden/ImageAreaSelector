@@ -26,9 +26,10 @@ var selector = new Selector({
   imgId: 'img',           // The id of the image to be used for selecting
   className: 'container', // The image will be surrounded by a div, you can give that div a class name
   keepAspect: true,       // Allow any ratio, or keep the image ratio during resizing
-  minWidth: 50,           // Minimum allowed width
-  maxWidth: 300,          // Maximum allowed width
-  minHeight: 50,          // Minimum allowed height
+  customRatio: true,      // Use image ratio, or maxWidth/maxHeight ratio
+  minWidth: 100,           // Minimum allowed width
+  maxWidth: 400,          // Maximum allowed width
+  minHeight: 75,          // Minimum allowed height
   maxHeight: 300,         // Maximum allowed height
   relative: true          // Uses dimensions as native or relative
 })
