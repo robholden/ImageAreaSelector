@@ -49,7 +49,8 @@
       callback({
         width: this._props.width * this._props.ratio,
         height: this._props.height * this._props.ratio,
-        xy: [this._props.x * this._props.ratio, this._props.y * this._props.ratio]
+        x: this._props.x * this._props.ratio,
+        y: this._props.y * this._props.ratio
       });
     },
   
@@ -123,8 +124,8 @@
       selector.id = 'selector-move';    
       selector.style.width = that._props.width + 'px';
       selector.style.height = that._props.height + 'px';
-      selector.style.top = that._props.y + img.offsetTop + 'px';
-      selector.style.left = that._props.x + img.offsetLeft + 'px';
+      selector.style.top = that._props.y + 'px';
+      selector.style.left = that._props.x + 'px';
       selector.style.display = 'none';
   
       var resizor = document.createElement('div');
