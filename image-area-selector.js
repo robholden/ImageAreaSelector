@@ -32,6 +32,7 @@
       return target
     },
     _props: {
+      aspectRatio: 1,
       ratio: 1,
       x: 0,
       y: 0,
@@ -100,20 +101,21 @@
 
       if (that.options.customRatio) 
       {
-        that._props.ratio = that.options.maxWidth / that.options.maxHeight;
-        var mw = that.options.relative ? that.options.maxWidth : (that.options.maxWidth / that._props.ratio);
+        that._props.aspectRatio = that.options.maxWidth / that.options.maxHeight;
+        var mw = that.options.relative ? that.options.maxWidth : (that.options.maxWidth / that._props.aspectRatio);
         that._props.width = (img.width / 2) < mw ? (img.width / 2) : mw;
-        that._props.height = that._props.width / that._props.ratio;
+        that._props.height = that._props.width / that._props.aspectRatio;
       }
       else
       {
-        that._props.ratio = img.naturalWidth / img.width;
+        that._props.aspectRatio = img.naturalWidth / img.width;
 
-        var mw = that.options.relative ? that.options.maxWidth : (that.options.maxWidth / that._props.ratio);
+        var mw = that.options.relative ? that.options.maxWidth : (that.options.maxWidth / that._props.aspectRatio);
         that._props.width = (img.width / 2) < mw ? (img.width / 2) : mw;
         that._props.height = that._props.width / (img.width / img.height);
       }
 
+      that._props.ratio = img.width / img.naturalWidth;
       that._props.x = (img.width / 2) - (that._props.width / 2);
       that._props.y = (img.height / 2) - (that._props.height / 2);
 
@@ -226,14 +228,14 @@
         }
 
         // Re-calculate based on relative/native
-        var relWidth = that.options.relative ? width : (width * that._props.ratio);
-        var relHeight = that.options.relative ? height : (height * that._props.ratio);
+        var relWidth = that.options.relative ? width : (width * that._props.aspectRatio);
+        var relHeight = that.options.relative ? height : (height * that._props.aspectRatio);
         
-        var minWidth = that.options.relative ? that.options.minWidth : (that.options.minWidth / that._props.ratio);
-        var maxWidth = that.options.relative ? that.options.maxWidth : (that.options.maxWidth / that._props.ratio);
+        var minWidth = that.options.relative ? that.options.minWidth : (that.options.minWidth / that._props.aspectRatio);
+        var maxWidth = that.options.relative ? that.options.maxWidth : (that.options.maxWidth / that._props.aspectRatio);
 
-        var minHeight = that.options.relative ?  that.options.minHeight : (that.options.minHeight / that._props.ratio);
-        var maxHeight = that.options.relative ?  that.options.maxHeight : (that.options.maxHeight / that._props.ratio);
+        var minHeight = that.options.relative ?  that.options.minHeight : (that.options.minHeight / that._props.aspectRatio);
+        var maxHeight = that.options.relative ?  that.options.maxHeight : (that.options.maxHeight / that._props.aspectRatio);
         
         // Min/max width/height
         if (relWidth > that.options.maxWidth) {
@@ -254,7 +256,7 @@
         if (that.options.keepAspect) {
   
           // Set height based on width
-          if (that.options.customRatio) height = width / that._props.ratio;
+          if (that.options.customRatio) height = width / that._props.aspectRatio;
           else height = width * (img.height / img.width);
           
           // Centre view
