@@ -27,7 +27,7 @@ var selector = new Selector({
   className: 'container', // The image will be surrounded by a div, you can give that div a class name
   keepAspect: true,       // Allow any ratio, or keep the image ratio during resizing
   customRatio: true,      // Use image ratio, or maxWidth/maxHeight ratio
-  minWidth: 100,           // Minimum allowed width
+  minWidth: 100,          // Minimum allowed width
   maxWidth: 400,          // Maximum allowed width
   minHeight: 75,          // Minimum allowed height
   maxHeight: 300,         // Maximum allowed height
@@ -44,13 +44,18 @@ document.getElementById('img').onclick = function (event) {
 document.getElementById('done').onclick = function (event) {
   /*
     This generates the new picture dimensions in images native size
-    It returns the width & height of the new thumbnail as well as the x & y positions (bottom left corner)
-    It's up to you to create a thumbnail using these dimensions
+    It returns the width & height of the new thumbnail as well as the x & y positions
+    
+    This function has the option to crop the image locally. If set to true, the property 'img' on result will contain
+    the newly cropped image
   */
-  selector.capture(function(result) {
-    console.log(result);
-    selector.hide(); // This hides the selector
-  });
+  selector.capture(
+    function(result) {
+      console.log(result);
+      selector.hide(); // This hides the selector
+    },
+    true // Whether to crop client side
+  );
 }
 ~~~~
 

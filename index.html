@@ -1,33 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="image-area-selector.css">
   <title>Image Area Selector</title>
+
+  <style>
+    body {
+      padding: 25px;
+      user-select: none;
+      background: #CCC;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    div {
+      position: relative;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+    }
+
+    img.cropped {
+      max-width: 250px;
+    }
+  </style>
 </head>
+
 <body>
-  <div>
-    <img id="img" src="portrait.jpg"></div>
+  <div style="width: 500px; float: left;">
+    <div>
+      <img id="img" class="selector" src="portrait.jpg">
+    </div>
+    <button id="done">Done</button>
   </div>
-  <button id="done">Done</button> 
-  <br /><br />
-  <div id="coords"></div>
+
+  <div style="width: 500px; float: left; margin-left: 50px;">
+    <div id="coords"></div>
+    <br />
+    <div id="cropped"></div>
+  </div>
 
   <script src="image-area-selector.js"></script>
   <script>
     var selector = new Selector({
       imgId: 'img',
       className: 'outer',
-      keepAspect: true,
+      keepAspect: false,
       customRatio: true,
       minWidth: 100,
       maxWidth: 400,
       minHeight: 75,
       maxHeight: 300,
-      relative: true
+      relative: false
     }).setup();
 
     document.getElementById('img').onclick = function (event) {
@@ -35,18 +65,24 @@
     }
 
     document.getElementById('done').onclick = function (event) {
-      selector.capture(function(result) {
-        var data = "<table>" +
-                   "  <tr><td>Width &nbsp;&nbsp;</td> <td>" + result.width.toFixed(2) + "px</td></tr>" +
-                   "  <tr><td>Height</td> <td>" + result.height.toFixed(2) + "px</td></tr>" +
-                   "  <tr><td>X</td> <td>" + result.x.toFixed(2) + "</td></tr>" +
-                   "  <tr><td>Y</td> <td>" + result.y.toFixed(2) + "</td></tr>" +
-                   "</table>";
-        document.getElementById('coords').innerHTML = data;
-        console.log(result);
-        selector.hide();
-      });
+      var crop = true;
+
+      selector.capture(
+        function (result) {
+          var data = "<table>" +
+            "  <tr><td>Width &nbsp;&nbsp;</td> <td>" + result.width.toFixed(2) + "px</td></tr>" +
+            "  <tr><td>Height</td> <td>" + result.height.toFixed(2) + "px</td></tr>" +
+            "  <tr><td>X</td> <td>" + result.x.toFixed(2) + "</td></tr>" +
+            "  <tr><td>Y</td> <td>" + result.y.toFixed(2) + "</td></tr>" +
+            "</table>";
+          document.getElementById('coords').innerHTML = data;
+          document.getElementById('cropped').innerHTML = crop ? "<img class='cropped' src='" + result.img + "' />" : "";
+          selector.hide();
+        },
+        crop
+      );
     }
   </script>
 </body>
+
 </html>
