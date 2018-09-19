@@ -13,7 +13,7 @@
     body {
       padding: 25px;
       user-select: none;
-      background: #CCC;
+      background: #f2f2f2;
       font-family: Arial, Helvetica, sans-serif;
     }
 
@@ -23,11 +23,16 @@
 
     img {
       display: block;
-      width: 100%;
+      max-width: 100%;
     }
 
-    img.cropped {
-      max-width: 250px;
+    button {
+      float: right;
+      background: #FFF;
+      border: 1px solid #3183c5;
+      color: #3183c5;
+      padding: 7px 15px;
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -35,15 +40,15 @@
 <body>
   <div style="width: 500px; float: left;">
     <div>
-      <img id="img" class="selector" src="portrait.jpg">
+      <img id="img" class="selector" src="img.jpg">
     </div>
-    <button id="done">Done</button>
+    <button id="done">Finished</button>
   </div>
 
-  <div style="width: 500px; float: left; margin-left: 50px;">
+  <div style="float: left; margin-left: 50px;">
     <div id="coords"></div>
     <br />
-    <div id="cropped"></div>
+    <img id="preview" width="200" />
   </div>
 
   <script src="image-area-selector.js"></script>
@@ -51,36 +56,41 @@
     var selector = new Selector({
       imgId: 'img',
       className: 'outer',
-      keepAspect: false,
-      customRatio: true,
+      onStart: function (type, result) {
+        document.getElementById('preview').style.display = 'none';
+      },
+      onChange: function (type, result) {
+        var html = "<table>" +
+          "  <tr><td>Action</td> <td>" + type + "</td></tr>" +
+          "  <tr><td>Width &nbsp;&nbsp;</td> <td>" + result.width.toFixed(2) + "px</td></tr>" +
+          "  <tr><td>Height</td> <td>" + result.height.toFixed(2) + "px</td></tr>" +
+          "  <tr><td>X</td> <td>" + result.x.toFixed(2) + "</td></tr>" +
+          "  <tr><td>Y</td> <td>" + result.y.toFixed(2) + "</td></tr>" +
+          "</table>";
+        document.getElementById('coords').innerHTML = html;
+      },
+      onEnd: function (type, result) {
+        var img = document.getElementById('preview');
+        img.src = selector.crop();
+        img.style.display = 'block';
+      },
+      keepAspect: true,
+      customRatio: false,
       minWidth: 100,
       maxWidth: 400,
-      minHeight: 75,
-      maxHeight: 300,
-      relative: false
-    }).setup();
+      minHeight: 100,
+      maxHeight: 400,
+      relative: true
+    });
+
+    selector.setup(true);
 
     document.getElementById('img').onclick = function (event) {
       selector.show();
     }
 
     document.getElementById('done').onclick = function (event) {
-      var crop = true;
-
-      selector.capture(
-        function (result) {
-          var data = "<table>" +
-            "  <tr><td>Width &nbsp;&nbsp;</td> <td>" + result.width.toFixed(2) + "px</td></tr>" +
-            "  <tr><td>Height</td> <td>" + result.height.toFixed(2) + "px</td></tr>" +
-            "  <tr><td>X</td> <td>" + result.x.toFixed(2) + "</td></tr>" +
-            "  <tr><td>Y</td> <td>" + result.y.toFixed(2) + "</td></tr>" +
-            "</table>";
-          document.getElementById('coords').innerHTML = data;
-          document.getElementById('cropped').innerHTML = crop ? "<img class='cropped' src='" + result.img + "' />" : "";
-          selector.hide();
-        },
-        crop
-      );
+      selector.hide();
     }
   </script>
 </body>

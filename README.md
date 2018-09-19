@@ -22,40 +22,45 @@ There are four methods: setup, show, hide, capture.
 
 ### Javascript
 ~~~
+// Create instance of the Selector class
 var selector = new Selector({
-  imgId: 'img',           // The id of the image to be used for selecting
-  className: 'container', // The image will be surrounded by a div, you can give that div a class name
-  keepAspect: true,       // Allow any ratio, or keep the image ratio during resizing
-  customRatio: true,      // Use image ratio, or maxWidth/maxHeight ratio
-  minWidth: 100,          // Minimum allowed width
-  maxWidth: 400,          // Maximum allowed width
-  minHeight: 75,          // Minimum allowed height
-  maxHeight: 300,         // Maximum allowed height
-  relative: true          // Uses dimensions as native or relative
+  imgId:        'img',                // The id of the image to be used for selecting
+  className:    'container',          // The image will be surrounded by a div, you can give that div a class name
+  onStart:      (type, result) => {}, // Function called when an action has started ('Resize' or 'Move')
+  onChange:     (type, result) => {}, // Function called when an action has changed ('Resize' or 'Move')
+  onEnd:        (type, result) => {}, // Function called when an action has ended ('Resize' or 'Move')
+  keepAspect:   true,                 // Allow any ratio, or keep the image ratio during resizing
+  customRatio:  true,                 // Use image ratio, or maxWidth/maxHeight ratio
+  minWidth:     100,                  // Minimum allowed width
+  maxWidth:     400,                  // Maximum allowed width
+  minHeight:    75,                   // Minimum allowed height
+  maxHeight:    300,                  // Maximum allowed height
+  relative:     true                  // Uses dimensions as native or relative
 })
 
 // You can run this either before/after an image has loaded
-selector.setup();
+// Pass in a boolean to show the selector upon load
+selector.setup(true);
 
-document.getElementById('img').onclick = function (event) {
-  selector.show(); // Triggers the selector over the image
+// Methods to show/hide the selector
+select.show();
+select.hide();
+
+// Returns co-ordinates of the image
+/* 
+{
+  width:  number, // Native width in pixels
+  height: number, // Native height in pixels
+  x:      number, // Native start position x
+  y:      number, // Native start position y
+  img:    string  // If you pass in true this will contain the cropped image.
 }
+*/
+var result = select.capture(true);
 
-document.getElementById('done').onclick = function (event) {
-  /*
-    This generates the new picture dimensions in images native size
-    It returns the width & height of the new thumbnail as well as the x & y positions
-    
-    This function has the option to crop the image locally. If set to true, the property 'img' on result will contain
-    the newly cropped image
-  */
-  selector.capture(
-    function(result) {
-      console.log(result);
-      selector.hide(); // This hides the selector
-    },
-    true // Whether to crop client side
-  );
+// Returns an image in base64 format
+var src = select.crop();
+
 }
 ~~~~
 
@@ -64,11 +69,6 @@ Styling is up to you, but you can use the below for minimal styles.
 ~~~
 * {
   box-sizing: border-box;
-}
-
-body {
-  padding: 25px;
-  user-select: none;
 }
 
 div {

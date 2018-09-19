@@ -19,6 +19,9 @@
     var defaultOptions = {
       imgId: 'img',
       className: 'container',
+      onStart: null,
+      onChange: null,
+      onEnd: null,
       minWidth: 50,
       maxWidth: 300,
       minHeight: 50,
@@ -41,6 +44,7 @@
       }
       return target
     },
+    _inProgress: false,
     _img: null,
     _props: {
       aspectRatio: 1,
@@ -57,32 +61,50 @@
       resizing: ''
     },
 
-    setup: function () {
+    setup: function (show) {
 
       // Check img exists
-      var img = document.getElementById(this.options.imgId);
-      if (!img) return console.error('Element not found: ' + this.options.img);
-      this._img = img;
-
       var that = this;
-      try {
-        that.logic(img);
-      } catch (ex) {
-        img.onload = function (event) {
-          that.logic(this);
+      setTimeout(function () {
+        var img = document.getElementById(that.options.imgId);
+        if (!img) return reject('Element not found: ' + that.options.img);
+
+        that._img = img;
+
+        var notLoaded = function () {
+          img.onload = function () {
+            that.logic(this);
+            if (show === true) that.show();
+          }
         }
-      }
+
+        if (img.width === 0 || img.height === 0 || img.naturalWidth === 0 || img.naturalHeight === 0) {
+          notLoaded();
+        } else {
+          try {
+            that.logic(img);
+            if (show === true) that.show();
+          } catch (ex) {
+            notLoaded();
+          }
+        }
+      }, 0);
 
       return this;
+
+    },
+
+    coords: function () {
+      return {
+        width: this._props.width / this._props.ratio,
+        height: this._props.height / this._props.ratio,
+        x: this._props.x / this._props.ratio,
+        y: this._props.y / this._props.ratio,
+      };
     },
 
     logic: function (img) {
       var that = this;
-
-      if (img.width === 0 || img.height === 0 || img.naturalWidth === 0 || img.naturalHeight === 0) {
-        setTimeout(() => that.logic(img), 100);
-        return;
-      }
 
       window.onresize = function () {
         that.logic(img);
@@ -101,6 +123,7 @@
         that._props.height = that._props.width / (img.width / img.height);
       }
 
+      var oldProps = Object.assign({}, that._props);
       that._props.ratio = img.width / img.naturalWidth;
       that._props.x = (img.width / 2) - (that._props.width / 2);
       that._props.y = (img.height / 2) - (that._props.height / 2);
@@ -158,6 +181,11 @@
 
         selector.style.top = absY + img.offsetTop + 'px';
         selector.style.left = absX + img.offsetLeft + 'px';
+
+        // If props have changed call on change fn
+        if (that.options.onChange != null && (oldProps.x != that._props.x || oldProps.y != that._props.y)) {
+          that.options.onChange('Move', that.coords());
+        }
 
       }
 
@@ -273,7 +301,7 @@
         }
 
         /* Update width positions */
-        if (!xLimitReached && newWidth < that.options.maxWidth) {
+        if ((that.options.keepAspect || !xLimitReached) && newWidth < that.options.maxWidth) {
           that._props.x = newX;
           selector.style.width = newWidth + 'px';
           selector.style.left = newX + img.offsetLeft + 'px';
@@ -282,7 +310,7 @@
         }
 
         /* Update height positions */
-        if (!yLimitReached && newHeight < that.options.maxHeight) {
+        if ((that.options.keepAspect || !yLimitReached) && newHeight < that.options.maxHeight) {
           that._props.y = newY;
           selector.style.height = newHeight + 'px';
           selector.style.top = newY + img.offsetTop + 'px';
@@ -293,6 +321,11 @@
         that._props.originX = event.clientX;
         that._props.originY = event.clientY;
 
+        // If props have changed call on change fn
+        if (that.options.onChange != null && (oldProps.height != that._props.height || oldProps.width != that._props.width)) {
+          that.options.onChange('Resize', that.coords());
+        }
+
       }
 
       var docDown = function (event) {
@@ -301,6 +334,9 @@
       }
 
       var docUp = function () {
+        if (that.options.onEnd) that.options.onEnd(that._props.resizing ? 'Resize' : 'Move', that.coords());
+
+        that._inProgress = false;
         that._props.mousedown = false;
         that._props.offsetX = 0;
         that._props.offsetY = 0;
@@ -312,6 +348,9 @@
 
         if (that._props.resizing) onResize(event);
         else onMove(event);
+
+        if (!that._inProgress && that.options.onStart) that.options.onStart(that._props.resizing ? 'Resize' : 'Move', that.coords());
+        that._inProgress = true;
       }
 
       var selDown = function (event) {
@@ -394,55 +433,59 @@
         container.appendChild(img);
       }
       img.parentElement.appendChild(selector);
+
     },
 
-    capture: function (callback, crop) {
-      var getImagePortion = function (imgObj, newWidth, newHeight, startX, startY) {
-        // Source: https://yellowpencil.com/blog/cropping-images-with-javascript/
-        /* the parameters: - the image element - the new width - the new height - the x point we start taking pixels - the y point we start taking pixels - the ratio */
-        //set up canvas for thumbnail
-        var tnCanvas = document.createElement('canvas');
-        var tnCanvasContext = tnCanvas.getContext('2d');
-        tnCanvas.width = newWidth;
-        tnCanvas.height = newHeight;
+    capture: function (crop) {
+      var data = this.coords();
+      if (crop === true) data['img'] = this.crop();
 
-        /* use the sourceCanvas to duplicate the entire image. This step was crucial for iOS4 and under devices. Follow the link at the end of this post to see what happens when you don’t do this */
-        var bufferCanvas = document.createElement('canvas');
-        var bufferContext = bufferCanvas.getContext('2d');
-        bufferCanvas.width = imgObj.naturalWidth;
-        bufferCanvas.height = imgObj.naturalHeight;
-        bufferContext.drawImage(imgObj, 0, 0);
+      return data;
+    },
 
-        /* now we use the drawImage method to take the pixels from our bufferCanvas and draw them into our thumbnail canvas */
-        tnCanvasContext.drawImage(bufferCanvas, startX, startY, newWidth, newHeight, 0, 0, newWidth, newHeight);
-        return tnCanvas.toDataURL();
-      }
+    crop: function () {
+      // Source: https://yellowpencil.com/blog/cropping-images-with-javascript/
+      // Set up canvas for thumbnail
+      var coords = this.coords();
+      var tnCanvas = document.createElement('canvas');
+      var tnCanvasContext = tnCanvas.getContext('2d');
+      tnCanvas.width = coords.width;
+      tnCanvas.height = coords.height;
 
-      var data = {
-        width: this._props.width / this._props.ratio,
-        height: this._props.height / this._props.ratio,
-        x: this._props.x / this._props.ratio,
-        y: this._props.y / this._props.ratio,
-      };
-      if (crop === true) data['img'] = getImagePortion(this._img, data.width, data.height, data.x, data.y);
+      /* Use the sourceCanvas to duplicate the entire image. 
+         This step was crucial for iOS4 and under devices. 
+         Follow the link at the end of this post to see what happens when you don’t do this
+      */
+      var bufferCanvas = document.createElement('canvas');
+      var bufferContext = bufferCanvas.getContext('2d');
+      bufferCanvas.width = this._img.naturalWidth;
+      bufferCanvas.height = this._img.naturalHeight;
+      bufferContext.drawImage(this._img, 0, 0);
 
-      callback(data);
+      /* Now we use the drawImage method to take the pixels from our bufferCanvas and draw them into our thumbnail canvas */
+      tnCanvasContext.drawImage(bufferCanvas, coords.x, coords.y, coords.width, coords.height, 0, 0, coords.width, coords.height);
+      return tnCanvas.toDataURL();
     },
 
     show: function () {
-      var selector = document.getElementById('selector-move');
-      if (!selector) return console.error('Element not loaded');
-      selector.style.display = 'block';
+      setTimeout(function () {
+        var selector = document.getElementById('selector-move');
+        if (!selector) return console.error('Element not loaded');
+        selector.style.display = 'block';
+      }, 0);
+
       return this;
     },
 
     hide: function () {
-      var selector = document.getElementById('selector-move');
-      if (!selector) return;
-
-      selector.style.display = 'none';
+      setTimeout(function () {
+        var selector = document.getElementById('selector-move');
+        if (!selector) return;
+        selector.style.display = 'none';
+      }, 0);
     }
   }
+
   return Selector
 })
 
