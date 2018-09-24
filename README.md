@@ -26,9 +26,9 @@ There are four methods: setup, show, hide, capture.
 var selector = new Selector({
   imgId:        'img',                // The id of the image to be used for selecting
   className:    'container',          // The image will be surrounded by a div, you can give that div a class name
-  onStart:      (type, result) => {}, // Function called when an action has started ('Resize' or 'Move')
-  onChange:     (type, result) => {}, // Function called when an action has changed ('Resize' or 'Move')
-  onEnd:        (type, result) => {}, // Function called when an action has ended ('Resize' or 'Move')
+  onStart:      (e) => {},            // Function called when an action has started. Returns custom event { detail: { type ('Resize' or 'Move'), values } }
+  onChange:     (e) => {},            // Function called when an action has changed. Returns custom event { detail: { type ('Resize' or 'Move'), values } }
+  onEnd:        (e) => {},            // Function called when an action has ended. Returns custom event { detail: { type ('Resize' or 'Move'), values } }
   keepAspect:   true,                 // Allow any ratio, or keep the image ratio during resizing
   customRatio:  true,                 // Use image ratio, or maxWidth/maxHeight ratio
   minWidth:     100,                  // Minimum allowed width

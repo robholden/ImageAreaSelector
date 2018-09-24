@@ -26,6 +26,10 @@
       max-width: 100%;
     }
 
+    #img {
+      width: 100%;
+    }
+
     button {
       float: right;
       background: #FFF;
@@ -56,20 +60,20 @@
     var selector = new Selector({
       imgId: 'img',
       className: 'outer',
-      onStart: function (type, result) {
+      onStart: function (e) {
         document.getElementById('preview').style.display = 'none';
       },
-      onChange: function (type, result) {
+      onChange: function (e) {
         var html = "<table>" +
-          "  <tr><td>Action</td> <td>" + type + "</td></tr>" +
-          "  <tr><td>Width &nbsp;&nbsp;</td> <td>" + result.width.toFixed(2) + "px</td></tr>" +
-          "  <tr><td>Height</td> <td>" + result.height.toFixed(2) + "px</td></tr>" +
-          "  <tr><td>X</td> <td>" + result.x.toFixed(2) + "</td></tr>" +
-          "  <tr><td>Y</td> <td>" + result.y.toFixed(2) + "</td></tr>" +
+          "  <tr><td>Action</td> <td>" + e.detail.type + "</td></tr>" +
+          "  <tr><td>Width &nbsp;&nbsp;</td> <td>" + e.detail.values.width.toFixed(2) + "px</td></tr>" +
+          "  <tr><td>Height</td> <td>" + e.detail.values.height.toFixed(2) + "px</td></tr>" +
+          "  <tr><td>X</td> <td>" + e.detail.values.x.toFixed(2) + "</td></tr>" +
+          "  <tr><td>Y</td> <td>" + e.detail.values.y.toFixed(2) + "</td></tr>" +
           "</table>";
         document.getElementById('coords').innerHTML = html;
       },
-      onEnd: function (type, result) {
+      onEnd: function (e) {
         var img = document.getElementById('preview');
         img.src = selector.crop();
         img.style.display = 'block';

@@ -30,35 +30,79 @@
       keepAspect: true,
       customRatio: true
     }
-    this.options = this.extend(options, defaultOptions)
+    this.options = this.extend(options, defaultOptions);
+
+    this._setProps();
+    this._customEventIE();
   }
   Selector.prototype = {
     extend: function (source, target) {
       if (source == null) {
         return target
       }
+
       for (var k in source) {
         if (source[k] != null && target[k] !== source[k]) {
           target[k] = source[k]
         }
       }
-      return target
+
+      return target;
     },
     _inProgress: false,
     _img: null,
-    _props: {
-      aspectRatio: 1,
-      ratio: 1,
-      x: 0,
-      y: 0,
-      width: 300,
-      height: 300,
-      mousedown: false,
-      offsetX: 0,
-      offsetY: 0,
-      originX: 0,
-      originY: 0,
-      resizing: ''
+    _props: {},
+    _setProps: function () {
+      this._props = {
+        aspectRatio: 1,
+        ratio: 1,
+        x: 0,
+        y: 0,
+        width: 300,
+        height: 300,
+        mousedown: false,
+        offsetX: 0,
+        offsetY: 0,
+        originX: 0,
+        originY: 0,
+        resizing: ''
+      };
+    },
+    _customEventIE: function () {
+      if (typeof window.CustomEvent === "function") return false; //If not IE
+
+      function CustomEvent(event, params) {
+        params = params || {
+          bubbles: false,
+          cancelable: false,
+          detail: undefined
+        };
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+      }
+
+      CustomEvent.prototype = window.Event.prototype;
+      window.CustomEvent = CustomEvent;
+    },
+    _clone: function (obj) {
+      var o = {};
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          o[prop] = obj[prop];
+        }
+      }
+      return o;
+    },
+    _triggerEvent: function (eventName, type) {
+      if (!this._img) return;
+      var event = new CustomEvent(eventName, {
+        detail: {
+          type: type,
+          values: this.coords()
+        }
+      });
+      this._img.dispatchEvent(event);
     },
 
     setup: function (show) {
@@ -94,6 +138,17 @@
 
     },
 
+    destroy: function () {
+      if (that.options.onStart) img.removeEventListener('onStart', that.options.onStart);
+      if (that.options.onChange) img.removeEventListener('onChange', that.options.onChange);
+      if (that.options.onEnd) img.removeEventListener('onEnd', that.options.onEnd);
+
+      var selector = document.getElementById('selector-move');
+      if (selector) selector.remove();
+
+      this._setProps();
+    },
+
     coords: function () {
       return {
         width: this._props.width / this._props.ratio,
@@ -105,6 +160,10 @@
 
     logic: function (img) {
       var that = this;
+
+      if (that.options.onStart) img.addEventListener('onStart', that.options.onStart);
+      if (that.options.onChange) img.addEventListener('onChange', that.options.onChange);
+      if (that.options.onEnd) img.addEventListener('onEnd', that.options.onEnd);
 
       window.onresize = function () {
         that.logic(img);
@@ -123,7 +182,7 @@
         that._props.height = that._props.width / (img.width / img.height);
       }
 
-      var oldProps = Object.assign({}, that._props);
+      var oldProps = that._clone(that._props);
       that._props.ratio = img.width / img.naturalWidth;
       that._props.x = (img.width / 2) - (that._props.width / 2);
       that._props.y = (img.height / 2) - (that._props.height / 2);
@@ -183,9 +242,7 @@
         selector.style.left = absX + img.offsetLeft + 'px';
 
         // If props have changed call on change fn
-        if (that.options.onChange != null && (oldProps.x != that._props.x || oldProps.y != that._props.y)) {
-          that.options.onChange('Move', that.coords());
-        }
+        if (oldProps.x != that._props.x || oldProps.y != that._props.y) that._triggerEvent('onChange', 'Move');
 
       }
 
@@ -231,14 +288,14 @@
             newWidth = that._props.width + (newX - xVal);
             newX = 0;
           } else if ((that._props.x + newWidth + xVal) > img.width) {
-            newWidth = that._props.width;
+            newWidth = img.width - that._props.x;
           }
 
           if (newY < 0) {
             newHeight = that._props.height;
             newY = 0;
           } else if ((that._props.y + that._props.height) > img.height) {
-            newHeight = that._props.height;
+            newHeight = img.height - that._props.y;
           }
         }
 
@@ -322,9 +379,7 @@
         that._props.originY = event.clientY;
 
         // If props have changed call on change fn
-        if (that.options.onChange != null && (oldProps.height != that._props.height || oldProps.width != that._props.width)) {
-          that.options.onChange('Resize', that.coords());
-        }
+        if (oldProps.height != that._props.height || oldProps.width != that._props.width) that._triggerEvent('onChange', 'Resize');
 
       }
 
@@ -334,7 +389,7 @@
       }
 
       var docUp = function () {
-        if (that.options.onEnd) that.options.onEnd(that._props.resizing ? 'Resize' : 'Move', that.coords());
+        that._triggerEvent('onEnd', that._props.resizing ? 'Resize' : 'Move');
 
         that._inProgress = false;
         that._props.mousedown = false;
@@ -349,7 +404,7 @@
         if (that._props.resizing) onResize(event);
         else onMove(event);
 
-        if (!that._inProgress && that.options.onStart) that.options.onStart(that._props.resizing ? 'Resize' : 'Move', that.coords());
+        if (!that._inProgress) that._triggerEvent('onStart', that._props.resizing ? 'Resize' : 'Move');
         that._inProgress = true;
       }
 
