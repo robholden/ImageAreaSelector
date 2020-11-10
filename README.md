@@ -5,7 +5,7 @@ A Javascript plugin that selects an area of an image.
 ``npm install image-area-selector --save``
 
 ## Screenshots
-You can view a live demo [here](http://www.iamrobert.co.uk/projects).
+You can view a live demo [here](https://www.iamrobert.co.uk/projects/image-area-selector).
 
 <img src="https://media.giphy.com/media/20NWtoZW4edhWESmyw/giphy.gif" width="400"> <img src="https://media.giphy.com/media/8FJe2UCtlvv2TMorMx/giphy.gif" width="400">
 
