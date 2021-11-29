@@ -2,7 +2,7 @@
   "name": "image-area-selector",
   "version": "1.2.3",
   "description": "Plugin for image cropping.",
-  "main": "image-area-selector.js",  
+  "main": "image-area-selector.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/robholden/ImageAreaSelector.git"

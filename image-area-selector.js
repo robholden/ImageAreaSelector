@@ -65,7 +65,8 @@
         offsetY: 0,
         originX: 0,
         originY: 0,
-        resizing: ''
+        resizing: '',
+        initialRectangle: {}
       };
     },
     _customEventIE: function () {
@@ -104,6 +105,7 @@
       });
       this._img.dispatchEvent(event);
     },
+    _resizeObserver: null,
 
     setup: function (show) {
 
@@ -111,7 +113,9 @@
       var that = this;
       setTimeout(function () {
         var img = document.getElementById(that.options.imgId);
-        if (!img) return reject('Element not found: ' + that.options.img);
+        if (!img) {
+          throw new Error('Element not found: ' + that.options.img);
+        }
 
         that._img = img;
 
@@ -132,19 +136,40 @@
             notLoaded();
           }
         }
+        
+        that._resizeObserver = new ResizeObserver((function(){
+          let isFirstEvent = true;
+          return entries => {
+            for (let entry of entries) {
+              if (entry.target === that._img) {
+                if (isFirstEvent) {
+                  isFirstEvent = false;
+                }
+                else {
+                  console.log("yeah!");
+                  that.logic(that._img);
+                }
+              }
+            }
+          };
+        }()));
+        
+        that._resizeObserver.observe(img);
       }, 0);
 
       return this;
-
     },
 
     destroy: function () {
-      if (that.options.onStart) img.removeEventListener('onStart', that.options.onStart);
-      if (that.options.onChange) img.removeEventListener('onChange', that.options.onChange);
-      if (that.options.onEnd) img.removeEventListener('onEnd', that.options.onEnd);
+      let that = this;
+      if (that.options.onStart) that._img.removeEventListener('onStart', that.options.onStart);
+      if (that.options.onChange) that._img.removeEventListener('onChange', that.options.onChange);
+      if (that.options.onEnd) that._img.removeEventListener('onEnd', that.options.onEnd);
 
       var selector = document.getElementById('selector-move');
       if (selector) selector.remove();
+      
+      that._resizeObserver.unobserve(that._img);
 
       this._setProps();
     },
@@ -164,31 +189,43 @@
       if (that.options.onStart) img.addEventListener('onStart', that.options.onStart);
       if (that.options.onChange) img.addEventListener('onChange', that.options.onChange);
       if (that.options.onEnd) img.addEventListener('onEnd', that.options.onEnd);
+      
+      that._props.ratio = img.width / img.naturalWidth;
 
-      window.onresize = function () {
-        that.logic(img);
+      if (Object.keys(that.options.initialRectangle)) {
+        that._props.width = that.options.initialRectangle.width * that._props.ratio;
+        that._props.height = that.options.initialRectangle.height * that._props.ratio;
+        that._props.x = that.options.initialRectangle.x * that._props.ratio;
+        that._props.y = that.options.initialRectangle.y * that._props.ratio;
+        that._props.aspectRatio = that.options.initialRectangle.width / that.options.initialRectangle.height;
       }
-
-      if (that.options.customRatio) {
-        that._props.aspectRatio = that.options.maxWidth / that.options.maxHeight;
-        var mw = that.options.relative ? that.options.maxWidth : (that.options.maxWidth / that._props.aspectRatio);
-        that._props.width = (img.width / 2) < mw ? (img.width / 2) : mw;
-        that._props.height = that._props.width / that._props.aspectRatio;
-      } else {
-        that._props.aspectRatio = img.naturalWidth / img.width;
-
-        var mw = that.options.relative ? that.options.maxWidth : (that.options.maxWidth / that._props.aspectRatio);
-        that._props.width = (img.width / 2) < mw ? (img.width / 2) : mw;
-        that._props.height = that._props.width / (img.width / img.height);
+      else {
+        if (that.options.customRatio) {
+          that._props.aspectRatio = that.options.maxWidth / that.options.maxHeight;
+          let mw = that.options.relative ? that.options.maxWidth : (that.options.maxWidth / that._props.aspectRatio);
+          that._props.width = (img.width / 2) < mw ? (img.width / 2) : mw;
+          that._props.height = that._props.width / that._props.aspectRatio;
+        }
+        else {
+          that._props.aspectRatio = img.naturalWidth / img.naturalHeight;
+    
+          let mw = that.options.relative ? that.options.maxWidth : (that.options.maxWidth / that._props.aspectRatio);
+          that._props.width = (img.width / 2) < mw ? (img.width / 2) : mw;
+          that._props.height = that._props.width / (img.width / img.height);
+        }
+        
+        that._props.x = (img.width / 2) - (that._props.width / 2);
+        that._props.y = (img.height / 2) - (that._props.height / 2);
       }
 
       var oldProps = that._clone(that._props);
-      that._props.ratio = img.width / img.naturalWidth;
-      that._props.x = (img.width / 2) - (that._props.width / 2);
-      that._props.y = (img.height / 2) - (that._props.height / 2);
 
       var selector = document.getElementById('selector-move');
-      if (selector) selector.remove();
+      if (selector) {
+        selector.remove();
+      }
+      
+      const isShown = selector ? (selector.style.display !== 'none') : false;
 
       selector = document.createElement('div');
       selector.id = 'selector-move';
@@ -196,7 +233,7 @@
       selector.style.height = that._props.height + 'px';
       selector.style.top = that._props.y + 'px';
       selector.style.left = that._props.x + 'px';
-      selector.style.display = 'none';
+      selector.style.display = isShown ? 'block' : 'none';
 
       var resizor = document.createElement('div');
       var nw = document.createElement('div');
@@ -507,8 +544,8 @@
       tnCanvas.width = coords.width;
       tnCanvas.height = coords.height;
 
-      /* Use the sourceCanvas to duplicate the entire image. 
-         This step was crucial for iOS4 and under devices. 
+      /* Use the sourceCanvas to duplicate the entire image.
+         This step was crucial for iOS4 and under devices.
          Follow the link at the end of this post to see what happens when you don’t do this
       */
       var bufferCanvas = document.createElement('canvas');
@@ -544,13 +581,13 @@
   return Selector
 })
 
-Element.prototype.remove = function () {
-  this.parentElement.removeChild(this);
-}
-NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
-  for (var i = this.length - 1; i >= 0; i--) {
-    if (this[i] && this[i].parentElement) {
-      this[i].parentElement.removeChild(this[i]);
-    }
-  }
-}
+// Element.prototype.remove = function () {
+//   this.parentElement.removeChild(this);
+// }
+// NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
+//   for (var i = this.length - 1; i >= 0; i--) {
+//     if (this[i] && this[i].parentElement) {
+//       this[i].parentElement.removeChild(this[i]);
+//     }
+//   }
+// }
