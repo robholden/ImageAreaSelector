@@ -3,8 +3,9 @@
 }
 
 #selector-container {
-  display: inline-block;
+  position: relative;
   overflow: hidden;
+  display: inline-block;
 }
 
 #selector-move {

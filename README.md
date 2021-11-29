@@ -13,15 +13,15 @@ You can view a live demo [here](https://www.iamrobert.co.uk/projects/image-area-
 There are four methods: setup, show, hide, capture.
 
 ### HTML
-~~~~
+```html
 <div>
   <img id="img" src="large.jpg"></div>
 </div>
 <button id="done">Done</button>
-~~~~
+```
 
 ### Javascript
-~~~
+```javascript
 // Create instance of the Selector class
 var selector = new Selector({
   imgId:        'img',                // The id of the image to be used for selecting
@@ -35,7 +35,13 @@ var selector = new Selector({
   maxWidth:     400,                  // Maximum allowed width
   minHeight:    75,                   // Minimum allowed height
   maxHeight:    300,                  // Maximum allowed height
-  relative:     true                  // Uses dimensions as native or relative
+  relative:     true,                 // Uses dimensions as native or relative
+  initialRectangle: {                 // Initial Rectangle (optional)
+    x: 0,                             // initial x coord
+    y: 0,                             // initial y coord
+    width: 50,
+    height: 50
+  }
 })
 
 // You can run this either before/after an image has loaded
@@ -60,13 +66,11 @@ var result = select.capture(true);
 
 // Returns an image in base64 format
 var src = select.crop();
-
-}
-~~~~
+```
 
 ### Stylesheet
 Styling is up to you, but you can use the below for minimal styles.
-~~~
+```css
 * {
   box-sizing: border-box;
 }
@@ -140,4 +144,4 @@ img {
   border-right: 5px solid black;
   cursor: se-resize;
 }
-~~~
+```
