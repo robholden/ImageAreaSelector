@@ -191,7 +191,7 @@
       
       that._props.ratio = img.width / img.naturalWidth;
 
-      if (Object.keys(that.options.initialRectangle)) {
+      if (that.options.initialRectangle && Object.keys(that.options.initialRectangle)) {
         that._props.width = that.options.initialRectangle.width * that._props.ratio;
         that._props.height = that.options.initialRectangle.height * that._props.ratio;
         that._props.x = that.options.initialRectangle.x * that._props.ratio;
