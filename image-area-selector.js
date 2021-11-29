@@ -146,7 +146,6 @@
                   isFirstEvent = false;
                 }
                 else {
-                  console.log("yeah!");
                   that.logic(that._img);
                 }
               }
